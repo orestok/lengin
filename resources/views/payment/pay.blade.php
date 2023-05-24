@@ -8,7 +8,7 @@
     <form method="post" action="{{route('payment.pay')}}" class="payment-form">
         @if($errors->any())
             <ul class="alert alert-danger">
-                {!! implode($errors->all('<li>:message.</li>')) !!}
+                {!! implode($errors->all('<li>:message</li>')) !!}
             </ul>
         @endif
         @csrf
