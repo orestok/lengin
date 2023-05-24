@@ -19,6 +19,7 @@ Route::group([
     'as' => 'payment.',
     'middleware' => 'has_invoice',
 ], function (){
-    Route::get('process', 'PaymentController@process')->name('process');
-    Route::post('pay', 'PaymentController@pay')->name('pay');
+    Route::get('process', 'PaymentController@create')->name('process');
+    Route::post('pay', 'PaymentController@store')->name('pay');
+    Route::delete('decline', 'PaymentController@delete')->name('decline');
 });

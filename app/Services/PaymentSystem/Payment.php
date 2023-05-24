@@ -4,13 +4,13 @@ namespace App\Services\PaymentSystem;
 
 class Payment {
 
-    public static function pay($cvv): array {
+    public static function pay($cvv): \StdClass {
 
         //Only for demo purposes
 
         [$code, $message] = self::generateStatus($cvv);
 
-        return [
+        return (object)[
             'result' => $code == Status::SUCCESS,
             'message' => $message,
         ];

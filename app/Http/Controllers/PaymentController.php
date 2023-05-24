@@ -6,6 +6,7 @@ use App\Http\Requests\PaymentPayRequest;
 use App\Models\Order;
 use App\Models\Service;
 use App\Services\PaymentSystem\Payment;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
@@ -36,11 +37,21 @@ class PaymentController extends Controller {
 
     }
 
-    public function process(Request $request) {
-        return view('payment.pay');
+    public function create(Request $request) {
+
+        $months = [];
+
+        foreach (range(1, 12) as $month) {
+            $months[$month] = Carbon::create(null, $month)->format('F');
+        }
+
+        return view('payment.pay', [
+            'months' => $months,
+            'years' => range(Carbon::today()->year, Carbon::today()->addYears(5)->year),
+        ]);
     }
 
-    public function pay(PaymentPayRequest $request) {
+    public function store(PaymentPayRequest $request) {
 
         DB::beginTransaction();
 
@@ -50,20 +61,31 @@ class PaymentController extends Controller {
 
         $response = Payment::pay($request->get('cvv'));
 
-        if($response['result']) {
+        if($response->result) {
+
             DB::commit();
             $request->session()->remove('invoice');
+
         } else {
+
             DB::rollBack();
 
             return Redirect::back()
                 ->withErrors([
-                    'bank' => $response['message'],
+                    'bank' => $response->message,
                 ]);
 
         }
 
         return view('payment.success');
+
+    }
+
+    public function delete(Request $request) {
+
+        $request->session()->remove('invoice');
+
+        return Redirect::route('home');
 
     }
 

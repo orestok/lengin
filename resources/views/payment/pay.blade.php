@@ -19,7 +19,7 @@
             </div>
             <div class="form-group cvv">
                 <label for="cvv" class="form-label">CVV</label>
-                <input type="text" name="cvv" class="form-control @error('cvv') is-invalid @enderror" id="cvv">
+                <input type="password" name="cvv" maxlength="3" class="form-control @error('cvv') is-invalid @enderror" id="cvv">
             </div>
         </div>
         <div class="form-group" id="card-number-field">
@@ -31,23 +31,14 @@
                 <label class="form-label">Expiration Date</label>
                 <div class="expiration-date">
                     <select name="month" id="month" class="form-select me-2 w-100  @error('month') is-invalid @enderror">
-                        <option value="01">January</option>
-                        <option value="02">February </option>
-                        <option value="03">March</option>
-                        <option value="04">April</option>
-                        <option value="05">May</option>
-                        <option value="06">June</option>
-                        <option value="07">July</option>
-                        <option value="08">August</option>
-                        <option value="09">September</option>
-                        <option value="10">October</option>
-                        <option value="11">November</option>
-                        <option value="12">December</option>
+                        @foreach($months as $month => $name)
+                            <option value="{{$month}}">{{$name}}</option>
+                        @endforeach
                     </select>
                     <select name="year" id="year" class="form-select @error('year') is-invalid @enderror">
-                        @for($i = date('Y'); $i < (date('Y') + 10); $i++)
-                            <option value="{{$i}}"> {{$i}}</option>
-                        @endfor
+                        @foreach($years as $year)
+                            <option value="{{$year}}"> {{$year}}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -57,5 +48,10 @@
             </div>
         </div>
         <input type="submit" class="btn btn-primary btn-lg w-100 my-4" value="Pay now">
+    </form>
+    <form method="post" action="{{route('payment.decline')}}" class="payment-form text-center">
+        <input type="hidden" name="_method" value="delete">
+        @csrf
+        <input type="submit" class="btn btn-sm btn-outline-secondary" value="Cancel payment">
     </form>
 @endsection
